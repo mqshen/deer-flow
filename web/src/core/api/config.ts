@@ -9,7 +9,7 @@ declare global {
 }
 
 export async function loadConfig() {
-  const res = await fetch(resolveServiceURL("./config"));
+  const res = await fetch(resolveServiceURL("config"));
   const config = await res.json();
   return config;
 }

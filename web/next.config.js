@@ -40,8 +40,8 @@ const config = {
     return  [
         {
           source: '/api/:path*',
-          // destination: 'http://localhost:8081/api/ai_chat/:path*',
-          destination: 'http://192.168.65.164:81/api/:path*',
+          destination: 'http://localhost:8000/api/:path*',
+          // destination: 'http://192.168.65.164:81/api/:path*',
         },
       ]
   },
