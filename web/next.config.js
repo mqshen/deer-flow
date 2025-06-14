@@ -35,6 +35,16 @@ const config = {
     return config;
   },
 
+  rewrites: async () => {
+    console.log("Rewrites called");
+    return  [
+        {
+          source: '/api/:path*',
+          // destination: 'http://localhost:8081/api/ai_chat/:path*',
+          destination: 'http://192.168.65.164:81/api/:path*',
+        },
+      ]
+  },
   // ... rest of the configuration.
   output: "standalone",
 };

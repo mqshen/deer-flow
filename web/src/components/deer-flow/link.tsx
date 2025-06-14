@@ -21,10 +21,10 @@ export const Link = ({
 
     (toolCalls || []).forEach((call) => {
       if (call && call.name === "web_search" && call.result) {
-        const result = JSON.parse(call.result) as Array<{ url: string }>;
-        result.forEach((r) => {
-          links.add(r.url);
-        });
+        // const result = JSON.parse(call.result, []) as Array<{ url: string }>;
+        // result.forEach((r) => {
+        //   links.add(r.url);
+        // });
       }
     });
     return links;
