@@ -16,6 +16,8 @@ env = Environment(
     lstrip_blocks=True,
 )
 
+SELECTED_LANGUAGE = os.getenv("LANGUAGE", "zh")
+
 
 def get_prompt_template(prompt_name: str) -> str:
     """
@@ -28,7 +30,7 @@ def get_prompt_template(prompt_name: str) -> str:
         The template string with proper variable substitution syntax
     """
     try:
-        template = env.get_template(f"{prompt_name}.md")
+        template = env.get_template(f"templates/{SELECTED_LANGUAGE}/{prompt_name}.md")
         return template.render()
     except Exception as e:
         raise ValueError(f"Error loading template {prompt_name}: {e}")
@@ -58,7 +60,7 @@ def apply_prompt_template(
         state_vars.update(dataclasses.asdict(configurable))
 
     try:
-        template = env.get_template(f"{prompt_name}.md")
+        template = env.get_template(f"templates/{SELECTED_LANGUAGE}/{prompt_name}.md")
         system_prompt = template.render(**state_vars)
         return [{"role": "system", "content": system_prompt}] + state["messages"]
     except Exception as e:

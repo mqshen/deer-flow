@@ -4,7 +4,8 @@
 import { env } from "~/env";
 
 export function resolveServiceURL(path: string) {
-  let BASE_URL =  "/api/ai_chat/api/deer-flow";
+  // let BASE_URL =  "/api/ai_chat/api/deer-flow";
+  let BASE_URL =  "http://localhost:8000/api";
   if (!BASE_URL.endsWith("/")) {
     BASE_URL += "/";
   }

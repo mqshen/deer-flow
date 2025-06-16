@@ -8,6 +8,11 @@ import os
 from langchain_community.tools import BraveSearch, DuckDuckGoSearchResults
 from langchain_community.tools.arxiv import ArxivQueryRun
 from langchain_community.utilities import ArxivAPIWrapper, BraveSearchWrapper
+from langchain_community.utilities.searx_search import SearxSearchWrapper
+
+# 兼容不同 langchain_community 版本的 SearxSearchResults 导入
+from langchain_community.tools.searx_search.tool import SearxSearchResults
+
 
 from src.config import SearchEngine, SELECTED_SEARCH_ENGINE
 from src.tools.tavily_search.tavily_search_results_with_images import (
@@ -23,6 +28,8 @@ LoggedTavilySearch = create_logged_tool(TavilySearchResultsWithImages)
 LoggedDuckDuckGoSearch = create_logged_tool(DuckDuckGoSearchResults)
 LoggedBraveSearch = create_logged_tool(BraveSearch)
 LoggedArxivSearch = create_logged_tool(ArxivQueryRun)
+LoggedSearxSearch = create_logged_tool(SearxSearchResults)
+
 
 
 # Get the selected search tool
@@ -54,16 +61,31 @@ def get_web_search_tool(max_search_results: int):
                 load_all_available_meta=True,
             ),
         )
+    elif SELECTED_SEARCH_ENGINE == SearchEngine.SEARX.value:
+        return LoggedSearxSearch(
+            name="web_search",
+            wrapper=SearxSearchWrapper(
+                searx_host=os.getenv("SEARX_HOST", "http://localhost:2304"),  # 优先读取 .env 中 SEARX_HOST
+                unsecure=False,  # 如有 https 可改为 False
+                params={"language": "zh"},  # 可根据需要调整
+            ),
+            max_results=max_search_results
+        )
     else:
         raise ValueError(f"Unsupported search engine: {SELECTED_SEARCH_ENGINE}")
 
 
 if __name__ == "__main__":
-    results = LoggedDuckDuckGoSearch(
-        name="web_search", max_results=3, output_format="list"
+    searx_wrapper = SearxSearchWrapper(
+        searx_host=os.getenv("SEARX_HOST", "https://wecom.belink.com/search"),  # 优先读取 .env 中 SEARX_HOST
+        unsecure=True,  # 如有 https 可改为 False
+        params={"language": "zh"},  # 可根据需要调整
     )
-    print(results.name)
-    print(results.description)
-    print(results.args)
-    # .invoke("cute panda")
-    # print(json.dumps(results, indent=2, ensure_ascii=False))
+    loggerSearxSearch = LoggedSearxSearch(
+        name="web_search",
+        wrapper=searx_wrapper,
+        max_results=3
+    )
+    results = loggerSearxSearch.run("what is the weather in France ?", engine="qwant")
+    print(json.dumps(results, indent=2, ensure_ascii=False))
+
