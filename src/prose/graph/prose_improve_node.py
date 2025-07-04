@@ -19,7 +19,7 @@ def prose_improve_node(state: ProseState):
     prose_content = model.invoke(
         [
             SystemMessage(content=get_prompt_template("prose/prose_improver")),
-            HumanMessage(content=f"The existing text is: {state['content']}"),
+            HumanMessage(content=f"现有文本为: {state['content']}"),
         ],
     )
     logger.info(f"prose_content: {prose_content}")

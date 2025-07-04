@@ -20,7 +20,7 @@ def prose_zap_node(state: ProseState):
         [
             SystemMessage(content=get_prompt_template("prose/prose_zap")),
             HumanMessage(
-                content=f"For this text: {state['content']}.\nYou have to respect the command: {state['command']}"
+                content=f"对于本文: {state['content']}.\n你必须尊重命令: {state['command']}"
             ),
         ],
     )

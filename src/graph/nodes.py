@@ -124,6 +124,7 @@ def planner_node(
     logger.debug(f"Current state messages: {state['messages']}")
     logger.info(f"Planner response: {full_response}")
 
+    print(f"Planner response: {full_response}")
     try:
         curr_plan = json.loads(repair_json_output(full_response))
     except json.JSONDecodeError:
@@ -135,6 +136,7 @@ def planner_node(
     if curr_plan.get("has_enough_context"):
         logger.info("Planner response has enough context.")
         new_plan = Plan.model_validate(curr_plan)
+        print(f"Planner response new : {new_plan}")
         return Command(
             update={
                 "messages": [AIMessage(content=full_response, name="planner")],
@@ -218,7 +220,7 @@ def coordinator_node(
     logger.debug(f"Current state messages: {state['messages']}")
 
     goto = "__end__"
-    locale = state.get("locale", "en-US")  # Default locale if not specified
+    locale = state.get("locale", "zh-CN")  # Default locale if not specified
     research_topic = state.get("research_topic", "")
 
     if len(response.tool_calls) > 0:
@@ -265,7 +267,7 @@ def reporter_node(state: State, config: RunnableConfig):
                 f"# Research Requirements\n\n## Task\n\n{current_plan.title}\n\n## Description\n\n{current_plan.thought}"
             )
         ],
-        "locale": state.get("locale", "en-US"),
+        "locale": state.get("locale", "zh-CN"),
     }
     invoke_messages = apply_prompt_template("reporter", input_, configurable)
     observations = state.get("observations", [])
@@ -334,7 +336,7 @@ async def _execute_agent_step(
     agent_input = {
         "messages": [
             HumanMessage(
-                content=f"{completed_steps_info}# Current Task\n\n## Title\n\n{current_step.title}\n\n## Description\n\n{current_step.description}\n\n## Locale\n\n{state.get('locale', 'en-US')}"
+                content=f"{completed_steps_info}# Current Task\n\n## Title\n\n{current_step.title}\n\n## Description\n\n{current_step.description}\n\n## Locale\n\n{state.get('locale', 'zh-CN')}"
             )
         ]
     }
